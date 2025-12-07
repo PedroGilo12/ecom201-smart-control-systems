@@ -11,6 +11,14 @@ def dc_motor_model(x1_m, t, u):
     dx1_m = -a*k*x1_m + k*u
     return dx1_m
 
+def thermal_model(T, t, u):
+    T_ambient = 25.0
+    tau = 5.0
+    K = 2.0
+
+    dT = -(T - T_ambient)/tau + K*u
+    return dT
+
 def generate_random_pid_gains(n=10):
     pid_list = []
     for _ in range(n):
@@ -22,18 +30,21 @@ def generate_random_pid_gains(n=10):
 
 initial_set = generate_random_pid_gains(10)
 
-auto_tunning = pid_auto_tunning.PIDAutoTunning(dc_motor_model)
+auto_tunning = pid_auto_tunning.PIDAutoTunning(thermal_model, goodhart_gains=[0.0, 0.0, 1])
 parcial_result = auto_tunning.tunning(initial_set, False)
 parcial_result = sorted(parcial_result, key=lambda x: x[1])
 
 pid_gains = parcial_result[0][0]
+    
+# n = int((1 / (auto_tunning.ts_ms / 1000.0))*auto_tunning.tf + 1)
+# time_vector = np.linspace(0, auto_tunning.tf, n)
 
-auto_tunning = pid_auto_tunning.PIDAutoTunning(dc_motor_model)
 auto_tunning.set_save_figs(True)
 
 result = minimize(
     auto_tunning.run_pid,
     pid_gains,
+    # args=(time_vector, np.cos(time_vector)),
     method='Nelder-Mead',
     options={
         "maxiter": 100,      
