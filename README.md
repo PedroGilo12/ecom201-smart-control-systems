@@ -174,3 +174,44 @@ Ki = 9.511311192197654
 Kd = 0
 Custo = 0.50242851747384
 ```
+
+# Algorítmo PSO
+
+## Goodhart Gains: (c1 = 0.33, c2 = 0.33, c3 = 0.34)
+
+### Setpoint: Degrau
+* Tempo de simulação: 
+* Saturação do controlador: [-255, +255]
+
+<p align="center">
+  <img src="figs/pso1_2.743434.png">
+</p>
+
+```bash
+Tempo total de execução: 765.576 segundos
+Melhor solução encontrada:
+Kp = 0.9674
+Ki = 0.0000
+Kd = 0.0000
+
+Custo = 2.743434
+```
+
+## Goodhart Gains: (c1 = 0.01, c2 = 0.01, c3 = 0.98)
+
+### Setpoint: Degrau
+* Tempo de simulação:
+* Saturação do controlador: [-255, +255]
+
+<p align="center">
+  <img src="figs/pso2_0.499923.png">
+</p>
+
+```bash
+Tempo total de execução: 1484.252 segundos
+Melhor solução encontrada:
+Kp = 10.0779
+Ki = 10.1977
+Kd = 0
+Custo = 0.499923
+```
