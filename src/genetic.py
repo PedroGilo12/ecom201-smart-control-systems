@@ -1,6 +1,10 @@
 import random
 import numpy as np
 import pid_auto_tunning
+import time
+
+
+start_time = time.time()
 
 a = 1
 k = 1
@@ -9,11 +13,11 @@ def dc_motor_model(x1_m, t, u):
     dx1_m = -a*k*x1_m + k*u
     return dx1_m
 
-auto_tunning = pid_auto_tunning.PIDAutoTunning(dc_motor_model)
+auto_tunning = pid_auto_tunning.PIDAutoTunning(dc_motor_model, goodhart_gains=[0.01, 0.01, 0.98])
 
 def algoritmo_genetico(N=20, M=40, F=10, tol=1e-3, t=3):
 
-    bounds = [(0, 100), (0, 50), (0, 10)]  # Kp, Ki, Kd
+    bounds = [(0, 50), (0, 20), (0, 1)]  # Kp, Ki, Kd
 
     crom = []
 
@@ -82,9 +86,14 @@ def algoritmo_genetico(N=20, M=40, F=10, tol=1e-3, t=3):
         if P[t][1] - P[0][1] < tol:
             return P[0]
 
-best = algoritmo_genetico(N=10, M=40, tol=1e-3, t=3)
+best = algoritmo_genetico(N=20, M=40, tol=1e-3, t=3)
 auto_tunning.set_save_figs(True)
 auto_tunning.run_pid(best[0])
+
+end_time = time.time()
+elapsed = end_time - start_time
+
+print(f"\nTempo total de execução: {elapsed:.3f} segundos")
 
 print("Melhor solução encontrada:")
 print("Kp =", best[0][0])
